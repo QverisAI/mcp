@@ -1,0 +1,55 @@
+{
+  "name": "@qverisai/sdk",
+  "version": "0.1.1",
+  "description": "Official Qveris AI MCP Server SDK - Search and execute tools via natural language",
+  "keywords": [
+    "qveris",
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "tools",
+    "sdk"
+  ],
+  "author": "QverisAI",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qverisai/sdk"
+  },
+  "homepage": "https://github.com/qverisai/sdk#readme",
+  "bugs": {
+    "url": "https://github.com/qverisai/sdk/issues"
+  },
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "qveris-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "prepublishOnly": "npm run build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "@types/uuid": "^10.0.0",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
