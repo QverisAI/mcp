@@ -49,7 +49,7 @@ export interface ExecuteToolInput {
    * @default 20480 (20KB)
    * @minimum -1 (-1 means no limit)
    */
-  max_data_size?: number;
+  max_response_size?: number;
 }
 
 /**
@@ -83,7 +83,7 @@ export const executeToolSchema = {
         'Session identifier for tracking user sessions. ' +
         'If not provided, an auto-generated session ID will be used.',
     },
-    max_data_size: {
+    max_response_size: {
       type: 'number',
       description:
         'Maximum size of response data in bytes. ' +
@@ -124,7 +124,7 @@ export async function executeExecuteTool(
     search_id: input.search_id,
     session_id: input.session_id ?? defaultSessionId,
     parameters,
-    max_data_size: input.max_data_size,
+    max_response_size: input.max_response_size,
   });
 
   return response;

@@ -202,7 +202,7 @@ describe('QverisClient', () => {
       );
     });
 
-    it('should include max_data_size when provided', async () => {
+    it('should include max_response_size when provided', async () => {
       fetchMock.mockResolvedValueOnce({
         ok: true,
         json: async () => ({
@@ -217,7 +217,7 @@ describe('QverisClient', () => {
       await client.executeTool('tool-1', {
         search_id: 'search-123',
         parameters: {},
-        max_data_size: 102400,
+        max_response_size: 102400,
       });
 
       expect(fetchMock).toHaveBeenCalledWith(
@@ -226,7 +226,7 @@ describe('QverisClient', () => {
           body: JSON.stringify({
             search_id: 'search-123',
             parameters: {},
-            max_data_size: 102400,
+            max_response_size: 102400,
           }),
         })
       );

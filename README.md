@@ -110,7 +110,7 @@ Execute a discovered tool with specific parameters.
 | `search_id` | string | ✓ | Search ID from the search that found this tool |
 | `params_to_tool` | string | ✓ | JSON string of parameters to pass to the tool |
 | `session_id` | string | | Session identifier (auto-generated if omitted) |
-| `max_data_size` | number | | Max response size in bytes (default: 20480) |
+| `max_response_size` | number | | Max response size in bytes (default: 20480) |
 
 **Example:**
 
@@ -153,7 +153,7 @@ If not provided, the SDK automatically generates and maintains a session ID for 
 
 ### Large Responses
 
-When tool output exceeds `max_data_size`, you'll receive:
+When tool output exceeds `max_response_size`, you'll receive:
 
 ```json
 {

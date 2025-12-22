@@ -158,7 +158,7 @@ export interface SearchResponse {
  *   search_id: "abc123",
  *   session_id: "user-session-123",
  *   parameters: { city: "London", units: "metric" },
- *   max_data_size: 20480
+ *   max_response_size: 20480
  * };
  * ```
  */
@@ -188,11 +188,11 @@ export interface ExecuteRequest {
    * @default 20480 (20KB)
    * @minimum -1 (-1 means no limit)
    */
-  max_data_size?: number;
+  max_response_size?: number;
 }
 
 /**
- * Result data when the response fits within max_data_size.
+ * Result data when the response fits within max_response_size.
  */
 export interface ExecuteResultData {
   /** The actual result data from the tool execution */
@@ -200,7 +200,7 @@ export interface ExecuteResultData {
 }
 
 /**
- * Result data when the response exceeds max_data_size.
+ * Result data when the response exceeds max_response_size.
  * Provides truncated content and a URL to download the full result.
  */
 export interface ExecuteResultTruncated {
@@ -214,7 +214,7 @@ export interface ExecuteResultTruncated {
   full_content_file_url: string;
 
   /**
-   * The initial portion of the response (max_data_size bytes).
+   * The initial portion of the response (max_response_size bytes).
    * Useful for previewing the data structure.
    */
   truncated_content: string;
