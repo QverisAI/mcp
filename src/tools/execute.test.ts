@@ -27,9 +27,9 @@ describe('execute_tool', () => {
       expect(executeToolSchema.properties.params_to_tool.type).toBe('string');
     });
 
-    it('should define max_data_size with default', () => {
-      expect(executeToolSchema.properties.max_data_size.type).toBe('number');
-      expect(executeToolSchema.properties.max_data_size.default).toBe(20480);
+    it('should define max_response_size with default', () => {
+      expect(executeToolSchema.properties.max_response_size.type).toBe('number');
+      expect(executeToolSchema.properties.max_response_size.default).toBe(20480);
     });
 
     it('should define session_id as optional', () => {
@@ -79,7 +79,7 @@ describe('execute_tool', () => {
         search_id: 'search-123',
         session_id: 'default-session',
         parameters: { city: 'Tokyo', units: 'metric' },
-        max_data_size: undefined,
+        max_response_size: undefined,
       });
 
       expect(result).toEqual(mockResponse);
@@ -109,11 +109,11 @@ describe('execute_tool', () => {
         search_id: 'search-123',
         session_id: 'custom-session',
         parameters: {},
-        max_data_size: undefined,
+        max_response_size: undefined,
       });
     });
 
-    it('should pass max_data_size when provided', async () => {
+    it('should pass max_response_size when provided', async () => {
       executeToolMock.mockResolvedValueOnce({
         execution_id: 'exec-123',
         tool_id: 'tool-1',
@@ -128,7 +128,7 @@ describe('execute_tool', () => {
           tool_id: 'tool-1',
           search_id: 'search-123',
           params_to_tool: '{}',
-          max_data_size: 102400,
+          max_response_size: 102400,
         },
         'default-session'
       );
@@ -137,7 +137,7 @@ describe('execute_tool', () => {
         search_id: 'search-123',
         session_id: 'default-session',
         parameters: {},
-        max_data_size: 102400,
+        max_response_size: 102400,
       });
     });
 
@@ -201,7 +201,7 @@ describe('execute_tool', () => {
         search_id: 'search-123',
         session_id: 'default-session',
         parameters: complexParams,
-        max_data_size: undefined,
+        max_response_size: undefined,
       });
     });
 

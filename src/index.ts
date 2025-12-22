@@ -224,13 +224,19 @@ async function main(): Promise<void> {
         };
       }
 
-      // Handle other errors
+      // Handle other errors (including fetch network errors)
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      const errorCause = error instanceof Error && error.cause instanceof Error 
+        ? error.cause.message 
+        : undefined;
+
       return {
         content: [
           {
             type: 'text',
             text: JSON.stringify({
-              error: error instanceof Error ? error.message : 'Unknown error occurred',
+              error: errorMessage,
+              ...(errorCause && { cause: errorCause }),
             }),
           },
         ],
