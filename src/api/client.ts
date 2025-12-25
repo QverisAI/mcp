@@ -10,6 +10,7 @@
 import type {
   SearchRequest,
   SearchResponse,
+  GetToolsByIdsRequest,
   ExecuteRequest,
   ExecuteResponse,
   QverisClientConfig,
@@ -126,7 +127,7 @@ export class QverisClient {
    * const result = await client.searchTools({
    *   query: 'send SMS message',
    *   limit: 10,
-   *   session_id: 'user-123'
+   *   session_id: 'abcd1234-ab12-ab12-ab12-abcdef123456'
    * });
    *
    * console.log(`Found ${result.total} tools`);
@@ -137,6 +138,34 @@ export class QverisClient {
    */
   async searchTools(request: SearchRequest): Promise<SearchResponse> {
     return this.request<SearchResponse>('POST', '/search', request);
+  }
+
+  /**
+   * Get tool descriptions by their IDs.
+   *
+   * Retrieves detailed information about specific tools when you already
+   * know their tool_ids. Useful for refreshing tool metadata or getting
+   * details for tools from previous searches.
+   *
+   * @param request - Request parameters with tool IDs
+   * @returns Tool information matching the provided IDs
+   *
+   * @example
+   * ```typescript
+   * const result = await client.getToolsByIds({
+   *   tool_ids: ['weather-tool-1', 'email-tool-2'],
+   *   search_id: 'abcd1234-ab12-ab12-ab12-abcdef123456',
+   *   session_id: 'abcd1234-ab12-ab12-ab12-abcdef123456'
+   * });
+   *
+   * console.log(`Retrieved ${result.results.length} tools`);
+   * for (const tool of result.results) {
+   *   console.log(`- ${tool.name}: ${tool.description}`);
+   * }
+   * ```
+   */
+  async getToolsByIds(request: GetToolsByIdsRequest): Promise<SearchResponse> {
+    return this.request<SearchResponse>('POST', '/tools/by-ids', request);
   }
 
   /**
@@ -152,8 +181,8 @@ export class QverisClient {
    * @example
    * ```typescript
    * const result = await client.executeTool('openweathermap_current', {
-   *   search_id: 'search-abc123',
-   *   session_id: 'user-123',
+   *   search_id: 'abcd1234-ab12-ab12-ab12-abcdef123456',
+   *   session_id: 'abcd1234-ab12-ab12-ab12-abcdef123456',
    *   parameters: {
    *     city: 'Tokyo',
    *     units: 'metric'

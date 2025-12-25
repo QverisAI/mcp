@@ -7,20 +7,11 @@ Official Qveris MCP Server SDK — Dynamically search and execute tools via natu
 
 ## Overview
 
-This SDK provides a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server that enables LLMs to discover and execute third-party tools through the Qveris API. With just two simple tools, your AI assistant can:
+This SDK provides a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server that enables LLMs to discover and execute third-party tools through the Qveris API. With three simple tools, your AI assistant can:
 
 - **Search** for tools using natural language queries
+- **Get** detailed information about specific tools by their IDs
 - **Execute** any discovered tool with the appropriate parameters
-
-## Installation
-
-```bash
-# Using npx (recommended for MCP)
-npx @qverisai/sdk
-
-# Or install globally
-npm add -g @qverisai/sdk
-```
 
 ## Quick Start
 
@@ -96,7 +87,7 @@ Search for available tools based on natural language queries.
 ```json
 {
   "query": "send email notification",
-  "limit": 5
+  "limit": 10
 }
 ```
 
@@ -116,9 +107,28 @@ Execute a discovered tool with specific parameters.
 
 ```json
 {
-  "tool_id": "openweathermap_current_weather",
-  "search_id": "abc123",
+  "tool_id": "openweathermap.weather.execute.v1",
+  "search_id": "abcd1234-ab12-ab12-ab12-abcdef123456",
   "params_to_tool": "{\"city\": \"London\", \"units\": \"metric\"}"
+}
+```
+
+### `get_tools_by_ids`
+
+Get detailed descriptions of tools based on their tool IDs. Useful for retrieving information about specific tools when you already know their IDs from previous searches.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `tool_ids` | array | ✓ | Array of tool IDs to retrieve (at least one required) |
+| `search_id` | string | | Search ID from the search that returned the tool(s) |
+| `session_id` | string | | Session identifier (auto-generated if omitted) |
+
+**Example:**
+
+```json
+{
+  "tool_ids": ["openweathermap.weather.execute.v1", "worldbank_refined.search_indicators.v1"],
+  "search_id": "abcd1234-ab12-ab12-ab12-abcdef123456"
 }
 ```
 
@@ -137,8 +147,8 @@ If not provided, the SDK automatically generates and maintains a session ID for 
 
 ```json
 {
-  "execution_id": "exec-123",
-  "tool_id": "openweathermap_current_weather",
+  "execution_id": "abcd1234-ab12-ab12-ab12-abcdef123456",
+  "tool_id": "openweathermap.weather.execute.v1",
   "success": true,
   "result": {
     "data": {

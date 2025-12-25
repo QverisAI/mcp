@@ -20,7 +20,7 @@
  * const request: SearchRequest = {
  *   query: "weather forecast API",
  *   limit: 10,
- *   session_id: "user-session-123"
+ *   session_id: "abcd1234-ab12-ab12-ab12-abcdef123456"
  * };
  * ```
  */
@@ -146,6 +146,41 @@ export interface SearchResponse {
 }
 
 // ============================================================================
+// Get Tools by IDs API Types
+// ============================================================================
+
+/**
+ * Request body for the Get Tools by IDs API.
+ *
+ * @example
+ * ```typescript
+ * const request: GetToolsByIdsRequest = {
+ *   tool_ids: ["tool-1", "tool-2"],
+ *   search_id: "search-123",
+ *   session_id: "abcd1234-ab12-ab12-ab12-abcdef123456"
+ * };
+ * ```
+ */
+export interface GetToolsByIdsRequest {
+  /**
+   * Array of tool IDs to retrieve information for.
+   */
+  tool_ids: string[];
+
+  /**
+   * The search_id from the search that returned the tool(s).
+   * Optional but recommended for analytics and billing.
+   */
+  search_id?: string;
+
+  /**
+   * Session identifier for tracking user sessions.
+   * Same ID corresponds to the same user session.
+   */
+  session_id?: string;
+}
+
+// ============================================================================
 // Execute API Types
 // ============================================================================
 
@@ -155,8 +190,8 @@ export interface SearchResponse {
  * @example
  * ```typescript
  * const request: ExecuteRequest = {
- *   search_id: "abc123",
- *   session_id: "user-session-123",
+ *   search_id: "abcd1234-ab12-ab12-ab12-abcdef123456",
+ *   session_id: "abcd1234-ab12-ab12-ab12-abcdef123456",
  *   parameters: { city: "London", units: "metric" },
  *   max_response_size: 20480
  * };

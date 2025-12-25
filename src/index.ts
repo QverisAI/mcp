@@ -44,6 +44,11 @@ import {
   executeExecuteTool,
   type ExecuteToolInput,
 } from './tools/execute.js';
+import {
+  getToolsByIdsSchema,
+  executeGetToolsByIds,
+  type GetToolsByIdsInput,
+} from './tools/get-by-ids.js';
 import type { ApiError } from './types.js';
 
 // ============================================================================
@@ -93,7 +98,7 @@ async function main(): Promise<void> {
 
   /**
    * Lists available tools.
-   * Returns the search_tools and execute_tool definitions.
+   * Returns the search_tools, get_tools_by_ids, and execute_tool definitions.
    */
   server.setRequestHandler(ListToolsRequestSchema, async () => {
     return {
@@ -105,6 +110,14 @@ async function main(): Promise<void> {
             'Returns relevant tools that can help accomplish tasks. ' +
             'Use this to discover tools before executing them.',
           inputSchema: searchToolsSchema,
+        },
+        {
+          name: 'get_tools_by_ids',
+          description:
+            'Get descriptions of tools based on their tool IDs. ' +
+            'Useful for retrieving detailed information about specific tools ' +
+            'when you already know their tool_ids from previous searches.',
+          inputSchema: getToolsByIdsSchema,
         },
         {
           name: 'execute_tool',
@@ -146,6 +159,37 @@ async function main(): Promise<void> {
         }
 
         const result = await executeSearchTools(client, input, defaultSessionId);
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(result, null, 2),
+            },
+          ],
+        };
+      }
+
+      if (name === 'get_tools_by_ids') {
+        const input = args as unknown as GetToolsByIdsInput;
+
+        // Validate required fields
+        if (!input.tool_ids || !Array.isArray(input.tool_ids) || input.tool_ids.length === 0) {
+          return {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify({
+                  error: 'Missing or invalid required parameter: tool_ids',
+                  hint: 'Provide an array of tool IDs (at least one) to retrieve tool information',
+                }),
+              },
+            ],
+            isError: true,
+          };
+        }
+
+        const result = await executeGetToolsByIds(client, input, defaultSessionId);
 
         return {
           content: [
@@ -200,7 +244,7 @@ async function main(): Promise<void> {
             type: 'text',
             text: JSON.stringify({
               error: `Unknown tool: ${name}`,
-              available_tools: ['search_tools', 'execute_tool'],
+              available_tools: ['search_tools', 'get_tools_by_ids', 'execute_tool'],
             }),
           },
         ],
