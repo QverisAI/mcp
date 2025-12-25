@@ -131,6 +131,146 @@ describe('QverisClient', () => {
     });
   });
 
+  describe('getToolsByIds', () => {
+    let client: QverisClient;
+    let fetchMock: ReturnType<typeof vi.fn>;
+
+    beforeEach(() => {
+      client = new QverisClient({ apiKey: 'test-api-key' });
+      fetchMock = vi.fn();
+      global.fetch = fetchMock;
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    it('should make POST request to /tools/by-ids endpoint', async () => {
+      const mockResponse = {
+        search_id: 'search-123',
+        results: [
+          {
+            tool_id: 'weather-tool-1',
+            name: 'Weather API',
+            description: 'Get weather data',
+          },
+        ],
+        total: 1,
+      };
+
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockResponse,
+      });
+
+      const result = await client.getToolsByIds({
+        tool_ids: ['weather-tool-1'],
+      });
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://qveris.ai/api/v1/tools/by-ids',
+        expect.objectContaining({
+          method: 'POST',
+          headers: {
+            Authorization: 'Bearer test-api-key',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            tool_ids: ['weather-tool-1'],
+          }),
+        })
+      );
+
+      expect(result).toEqual(mockResponse);
+    });
+
+    it('should include search_id and session_id when provided', async () => {
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          search_id: 'search-456',
+          results: [],
+        }),
+      });
+
+      await client.getToolsByIds({
+        tool_ids: ['tool-1', 'tool-2'],
+        search_id: 'search-456',
+        session_id: 'session-abc',
+      });
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          body: JSON.stringify({
+            tool_ids: ['tool-1', 'tool-2'],
+            search_id: 'search-456',
+            session_id: 'session-abc',
+          }),
+        })
+      );
+    });
+
+    it('should handle multiple tool IDs', async () => {
+      const toolIds = ['tool-1', 'tool-2', 'tool-3'];
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          search_id: 'search-123',
+          results: toolIds.map((id) => ({
+            tool_id: id,
+            name: `Tool ${id}`,
+            description: `Description for ${id}`,
+          })),
+          total: toolIds.length,
+        }),
+      });
+
+      const result = await client.getToolsByIds({
+        tool_ids: toolIds,
+      });
+
+      expect(result.results).toHaveLength(3);
+      expect(result.total).toBe(3);
+    });
+
+    it('should throw ApiError on non-OK response', async () => {
+      fetchMock.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        statusText: 'Bad Request',
+        json: async () => ({ message: 'Invalid tool_ids' }),
+      });
+
+      await expect(
+        client.getToolsByIds({ tool_ids: [] })
+      ).rejects.toEqual({
+        status: 400,
+        message: 'Invalid tool_ids',
+        details: { message: 'Invalid tool_ids' },
+      });
+    });
+
+    it('should handle non-JSON error response', async () => {
+      fetchMock.mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error',
+        json: async () => {
+          throw new Error('Not JSON');
+        },
+      });
+
+      await expect(
+        client.getToolsByIds({ tool_ids: ['tool-1'] })
+      ).rejects.toEqual({
+        status: 500,
+        message: 'Internal Server Error',
+        details: undefined,
+      });
+    });
+  });
+
   describe('executeTool', () => {
     let client: QverisClient;
     let fetchMock: ReturnType<typeof vi.fn>;
