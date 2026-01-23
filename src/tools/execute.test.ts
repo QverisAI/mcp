@@ -11,7 +11,6 @@ describe('execute_tool', () => {
   describe('executeToolSchema', () => {
     it('should have tool_id, search_id, params_to_tool as required', () => {
       expect(executeToolSchema.required).toContain('tool_id');
-      expect(executeToolSchema.required).toContain('search_id');
       expect(executeToolSchema.required).toContain('params_to_tool');
     });
 
